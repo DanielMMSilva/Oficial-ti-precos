@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OFICIAL TI — Consulta de Preço</title>
+<style>
+:root{--bg:#0e0e10;--card:#18181c;--card2:#22222a;--line:#2c2c34;--or:#ff7a1a;--txt:#fff;--mut:#a9a9b3}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+.wrap{max-width:560px;margin:0 auto;padding:20px 16px}
+h1{margin:0;color:var(--or);letter-spacing:.08em;font-size:1.6rem}
+.sub{color:var(--mut);margin:4px 0 18px;font-size:.95rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}
+h2{margin:0 0 12px;font-size:1.2rem}
+label{display:block;font-size:.8rem;color:var(--mut);margin:12px 0 4px}
+select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--txt);font-size:1rem}
+select:disabled{opacity:.5}
+.btn{display:block;width:100%;margin-top:16px;padding:14px;border:0;border-radius:12px;background:var(--or);color:#111;font-weight:700;font-size:1rem;text-align:center;text-decoration:none;cursor:pointer}
+.btn:disabled{opacity:.5}
+.price{font-size:2.2rem;font-weight:800;color:var(--or);margin:12px 0}
+.warn{background:#2b2010;border:1px solid #6b4b1a;color:#ffd39b;padding:10px 12px;border-radius:10px;font-size:.9rem;margin-top:10px}
+.err{color:#ff8a8a;font-size:.9rem;margin-top:10px}
+.muted{color:var(--mut);font-size:.9rem}
+footer{color:var(--mut);font-size:.8rem;text-align:center;margin-top:24px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>OFICIAL TI</h1>
+<p class="sub">Assistência Técnica e Soluções Tecnológicas</p>
+
+<div class="card">
+<h2>CONSULTA DE PREÇO</h2>
+<label for="tipo">Tipo de equipamento *</label>
+<select id="tipo"></select>
+<label for="marca">Marca *</label>
+<select id="marca" disabled></select>
+<label for="modelo">Modelo *</label>
+<select id="modelo" disabled></select>
+<label for="servico">Serviço ou peça *</label>
+<select id="servico" disabled></select>
+<label for="qualidade">Qualidade da peça</label>
+<select id="qualidade" disabled></select>
+<button class="btn" id="btn" disabled>Consultar preço</button>
+<p class="err" id="msg"></p>
+</div>
+
+<div id="res"></div>
+
+<footer>Rua Adolfo Bergamini, 22, Engenho de Dentro, Rio de Janeiro — RJ<br>WhatsApp: +55 21 98843-1645</footer>
+</div>
+
+<script>
+// Endereço do Apps Script (aplicativo da web)
+const API='https://script.google.com/macros/s/AKfycbwG49SD68nM7JBbVTqB-Gwx1cgdi1gL8nXHy57BLzmSEPDzS-HVTzIPH53UmVbcPovRkw/exec';
+const WHATS='5521988431645';
+const TIPO={celular:'Celular',tablet:'Tablet',ipad:'iPad',watch:'Apple Watch'};
+const BRL=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+const SEM='Preço sob avaliação técnica. Entre em contato com a Oficial TI.';
+let itens=[];
+const $=id=>document.getElementById(id);
+const uniq=a=>[...new Set(a)].sort();
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// Preenche um select mantendo a escolha atual, se ela ainda existir na lista
+function opts(sel,arr,ph){
+  const cur=sel.value;
+  sel.innerHTML='';
+  sel.append(new Option(ph,''));
+  arr.forEach(v=>sel.append(new Option(TIPO[v]||v,v)));
+  sel.value=arr.includes(cur)?cur:'';
+  sel.disabled=!arr.length;
+}
+
+// Recalcula os menus seguintes conforme as escolhas anteriores
+function cascata(){
+  const t=$('tipo').value;
+  const b1=itens.filter(i=>i.tipo===t);
+  opts($('marca'),uniq(b1.map(i=>i.marca)),'Selecione a marca');
+  const b2=b1.filter(i=>i.marca===$('marca').value);
+  opts($('modelo'),uniq(b2.map(i=>i.modelo)),'Selecione o modelo');
+  const b3=b2.filter(i=>i.modelo===$('modelo').value);
+  opts($('servico'),uniq(b3.map(i=>i.servico)),'Selecione o serviço');
+  const b4=b3.filter(i=>i.servico===$('servico').value);
+  opts($('qualidade'),uniq(b4.map(i=>i.qualidade)),'Selecione a qualidade');
+  $('btn').disabled=!($('tipo').value&&$('marca').value&&$('modelo').value&&$('servico').value);
+}
+
+// Mensagem enviada pelo WhatsApp
+function wa(p,preco){
+  const l=['Olá, Oficial TI! Gostaria de solicitar um orçamento.','',
+    `Equipamento: ${TIPO[p.tipo]||p.tipo}`,`Marca: ${p.marca}`,`Modelo: ${p.modelo}`,`Serviço: ${p.servico}`];
+  if(p.qualidade) l.push(`Qualidade: ${p.qualidade}`);
+  l.push(preco!=null?`Preço informado: ${BRL.format(preco)}`:'Preço não cadastrado: solicito avaliação técnica e orçamento.');
+  l.push('','Gostaria de confirmar a disponibilidade e as condições do serviço.');
+  return `https://wa.me/${WHATS}?text=${encodeURIComponent(l.join('\n'))}`;
+}
+
+// Consulta o preço final no Apps Script
+async function consultar(){
+  $('msg').textContent=''; $('res').innerHTML='';
+  const p={tipo:$('tipo').value,marca:$('marca').value,modelo:$('modelo').value,servico:$('servico').value,qualidade:$('qualidade').value};
+  if(!$('qualidade').disabled && !p.qualidade){ $('msg').textContent='Selecione a qualidade da peça.'; return; }
+  $('btn').disabled=true;
+  try{
+    const r=await fetch(API+'?'+new URLSearchParams({acao:'consulta',...p}));
+    const d=await r.json();
+    if(d.erro) throw new Error(d.erro);
+    mostrar(p,d);
+  }catch(e){
+    $('msg').textContent='Não foi possível consultar agora. Tente novamente em instantes.';
+  }finally{
+    $('btn').disabled=false;
+  }
+}
+
+function mostrar(p,d){
+  const sob=!(d.preco>0);
+  const preco=sob?null:d.preco;
+  $('res').innerHTML=`<div class="card">
+    <h2>Resultado da consulta</h2>
+    <p class="muted">${esc(TIPO[p.tipo]||p.tipo)} · ${esc(p.marca)} ${esc(p.modelo)}</p>
+    <p><b>Serviço:</b> ${esc(p.servico)}${p.qualidade?`<br><b>Qualidade:</b> ${esc(p.qualidade)}`:''}</p>
+    ${sob?`<div class="warn">${SEM}</div>`
+      :`<div class="price">${esc(BRL.format(preco))}</div><div class="warn">O valor pode depender de avaliação técnica do aparelho.</div>`}
+    <a class="btn" href="${wa(p,preco)}" target="_blank" rel="noopener">Solicitar pelo WhatsApp</a>
+  </div>`;
+}
+
+// Carrega as opções dos menus ao abrir a página
+async function iniciar(){
+  try{
+    const r=await fetch(API+'?acao=opcoes');
+    const d=await r.json();
+    itens=d.itens||[];
+    opts($('tipo'),uniq(itens.map(i=>i.tipo)),'Selecione o equipamento');
+    cascata();
+  }catch(e){
+    $('msg').textContent='Não foi possível carregar os aparelhos. Atualize a página.';
+  }
+}
+
+['tipo','marca','modelo','servico'].forEach(id=>$(id).addEventListener('change',cascata));
+$('btn').addEventListener('click',consultar);
+iniciar();
+</script>
+</body>
+</html>
