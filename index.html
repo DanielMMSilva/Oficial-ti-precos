@@ -2,816 +2,163 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Oficial TI | Conserto de celulares e notebooks</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0e0e10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="App Oficial TI">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<title>OFICIAL TI — Consulta de Preço</title>
 <style>
-  :root{--laranja:#FF6A00;--laranja-escuro:#D95500;--preto:#111111;--cinza:#6b6b6b;--claro:#f5f5f5;--branco:#ffffff;--borda:#e6e6e6}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--claro);color:var(--preto);padding-bottom:70px}
-  a{color:inherit;text-decoration:none}
-  button,input,select,textarea{font:inherit}
-  .container{max-width:1200px;margin:0 auto;padding:0 16px}
-  section{scroll-margin-top:130px}
-
-  /* Topo */
-  header{background:var(--preto);position:sticky;top:0;z-index:50}
-  .topo{display:flex;align-items:center;gap:12px;padding:12px 0}
-  .logo img{height:40px;display:block}
-  .busca{flex:1;display:flex;background:var(--branco);border-radius:999px;overflow:hidden}
-  .busca input{flex:1;border:0;padding:10px 16px;outline:none;min-width:0}
-  .busca button{background:var(--laranja);border:0;color:var(--branco);padding:0 18px;cursor:pointer;font-weight:700}
-  .carrinho-btn{background:none;border:0;color:var(--branco);font-size:24px;cursor:pointer;position:relative;text-decoration:none}
-  .badge{position:absolute;top:-6px;right:-10px;background:var(--laranja);color:var(--branco);font-size:11px;border-radius:999px;padding:1px 6px;font-weight:700}
-  nav.abas{display:flex;gap:22px;overflow-x:auto;padding:0 0 10px;scrollbar-width:none}
-  nav.abas a{color:#bdbdbd;font-weight:600;white-space:nowrap;padding:6px 0;border-bottom:3px solid transparent}
-  nav.abas a.ativa,nav.abas a:hover{color:var(--branco);border-bottom-color:var(--laranja)}
-
-  /* Categorias */
-  .categorias{display:flex;gap:6px;overflow-x:auto;padding:18px 0;scrollbar-width:none;background:var(--branco)}
-  .categorias a{min-width:84px;text-align:center;font-size:13px;color:var(--cinza);font-weight:600}
-  .categorias .icone{width:58px;height:58px;margin:0 auto 6px;border-radius:50%;background:#fff3ea;display:flex;align-items:center;justify-content:center;font-size:28px;border:1px solid #ffe0cc}
-
-  /* Banner */
-  .banner{margin:16px 0;border-radius:14px;background:linear-gradient(120deg,var(--preto) 55%,var(--laranja));color:var(--branco);padding:28px 24px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
-  .banner-foto{background:linear-gradient(90deg,rgba(17,17,17,.94) 40%,rgba(17,17,17,.45)),var(--fachada, url("imagens/loja-fachada.jpeg")) center/cover no-repeat;min-height:260px;align-items:center}
-  .banner h1{font-size:clamp(22px,4vw,34px);line-height:1.15}
-  .banner p{opacity:.9;margin-top:6px}
-  .btn{display:inline-block;background:var(--laranja);color:var(--branco);border:0;padding:12px 22px;border-radius:999px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center}
-  .btn:hover{background:var(--laranja-escuro)}
-  .btn-preto{background:var(--preto)}
-  .btn-preto:hover{background:#333}
-  .btn-branco{background:var(--branco);color:var(--preto)}
-
-  section{margin:34px 0}
-  .titulo-secao{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:10px;flex-wrap:wrap}
-  .titulo-secao h2{font-size:24px;font-weight:900}
-  .selo{background:var(--laranja);color:var(--branco);font-size:13px;padding:5px 12px;border-radius:999px;font-weight:700}
-
-  /* Passeio */
-  .passeio{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(260px,1fr);gap:14px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}
-  .passeio figure{scroll-snap-align:start;background:var(--branco);border-radius:12px;overflow:hidden;border:1px solid var(--borda)}
-  .passeio img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}
-  .passeio figcaption{padding:12px 14px;font-size:14px;color:var(--cinza);line-height:1.4}
-  .passeio figcaption strong{display:block;color:var(--preto);font-size:16px;margin-bottom:4px}
-  .foto-larga{width:100%;max-height:420px;object-fit:cover;border-radius:14px;margin-bottom:18px}
-
-  /* Grades e cards */
-  .grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
-  .card{background:var(--branco);border-radius:12px;overflow:hidden;border:1px solid var(--borda);display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s}
-  .card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.1)}
-  .card .imagem{aspect-ratio:1/1;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:56px;overflow:hidden}
-  .card .imagem img{width:100%;height:100%;object-fit:cover}
-  .card .corpo{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1}
-  .card h3{font-size:15px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .preco{color:var(--laranja);font-size:20px;font-weight:900}
-  .meta{font-size:12px;color:var(--cinza)}
-  .card .btn{margin-top:auto;padding:9px;font-size:14px}
-
-  .servico{background:var(--branco);border-radius:12px;padding:22px 16px;text-align:center;border:1px solid var(--borda);cursor:pointer;transition:all .15s}
-  .servico:hover{border-color:var(--laranja);transform:translateY(-3px)}
-  .servico .emoji{font-size:40px;margin-bottom:10px}
-  .servico h3{font-size:16px;margin-bottom:6px}
-  .servico p{font-size:13px;color:var(--cinza)}
-
-  .diferenciais{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
-  .dif{background:var(--preto);color:var(--branco);border-radius:12px;padding:20px}
-  .dif strong{color:var(--laranja);display:block;font-size:18px;margin-bottom:4px}
-  .dif span{font-size:14px;opacity:.85}
-
-  /* Formulários */
-  .painel{background:var(--branco);border-radius:14px;padding:22px;border:1px solid var(--borda)}
-  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-  .campo{display:flex;flex-direction:column;gap:6px}
-  .campo.inteiro{grid-column:1/-1}
-  .campo label{font-size:13px;font-weight:600;color:#333}
-  .campo input,.campo select,.campo textarea{border:1px solid #cfcfcf;border-radius:8px;padding:10px 12px;outline:none;background:var(--branco)}
-  .campo input:focus,.campo select:focus,.campo textarea:focus{border-color:var(--laranja)}
-  .campo textarea{min-height:90px;resize:vertical}
-  .sugestao{background:#fff3ea;border:1px dashed var(--laranja);border-radius:8px;padding:10px 12px;font-size:14px}
-  .acoes{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-  .lista-admin{margin-top:18px;display:flex;flex-direction:column;gap:8px}
-  .item-admin{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--borda);border-radius:8px;padding:10px 12px;background:#fff}
-  .item-admin small{color:var(--cinza)}
-  .lixo{background:none;border:0;color:#c00;cursor:pointer;font-weight:700}
-  .vazio{color:var(--cinza);font-size:14px;padding:10px 0}
-  .subtitulo{font-size:18px;font-weight:800;margin:26px 0 12px}
-  .separador{border:0;border-top:1px solid var(--borda);margin:26px 0}
-  .aviso{font-size:13px;color:var(--cinza);margin-top:10px}
-  .oculto{display:none !important}
-
-
-  /* ===== Efeitos de luz em movimento (cores da marca) ===== */
-  @keyframes varredura{0%{transform:translateX(-130%)}100%{transform:translateX(260%)}}
-  @keyframes linha-luz{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-  @keyframes pulso-luz{0%,100%{box-shadow:0 0 6px rgba(255,106,0,.35)}50%{box-shadow:0 0 22px rgba(255,106,0,.9)}}
-  @keyframes orbita{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-50px,35px) scale(1.15)}}
-
-  /* Brilho que atravessa os botões */
-  .btn{position:relative;overflow:hidden;animation:pulso-luz 3s ease-in-out infinite}
-  .btn::after{content:"";position:absolute;top:0;left:0;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-130%);animation:varredura 2.8s ease-in-out infinite;pointer-events:none}
-
-  /* Linha de luz percorrendo o topo dos painéis */
-  .painel{position:relative;overflow:hidden}
-  .painel::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--laranja),#ffc08a,var(--laranja),transparent);background-size:200% 100%;animation:linha-luz 3s linear infinite}
-
-  /* Banner com um feixe de luz laranja se movendo */
-  .banner{position:relative;overflow:hidden}
-  .banner::after{content:"";position:absolute;right:-70px;top:-70px;width:280px;height:280px;background:radial-gradient(circle,rgba(255,106,0,.6),transparent 70%);filter:blur(18px);animation:orbita 6s ease-in-out infinite;pointer-events:none}
-
-  /* Selo que pulsa com brilho */
-  .selo{animation:pulso-luz 2.6s ease-in-out infinite}
-
-  /* Cards de serviço com brilho ao passar o mouse */
-  .servico:hover{box-shadow:0 0 26px rgba(255,106,0,.6)}
-
-  /* Respeita quem prefere menos movimento */
-  @media (prefers-reduced-motion: reduce){*{animation:none !important}}
-
-  /* Rodapé */
-  footer{background:var(--preto);color:#cfcfcf;padding:30px 0;margin-top:40px}
-  footer h4{color:var(--laranja);margin-bottom:8px}
-  footer p,footer a{font-size:14px;line-height:1.8}
-  .rodape-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
-
-  /* Flutuante e barra inferior */
-  .whats-flutuante{position:fixed;right:16px;bottom:82px;background:#25D366;color:#fff;width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 16px rgba(0,0,0,.25);z-index:60;text-decoration:none}
-  .barra-inferior{position:fixed;left:0;right:0;bottom:0;background:var(--branco);border-top:1px solid var(--borda);display:flex;justify-content:space-around;padding:8px 0;z-index:55}
-  .barra-inferior a{font-size:12px;color:var(--cinza);text-align:center;font-weight:600;flex:1}
-  .barra-inferior a span{display:block;font-size:20px}
-  .barra-inferior a.ativa{color:var(--laranja)}
-
-  .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--preto);color:var(--branco);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:70}
-  .toast.visivel{opacity:1}
-
-  @media(min-width:900px){.barra-inferior{display:none}body{padding-bottom:0}.whats-flutuante{bottom:24px}}
+:root{--bg:#0b0b0d;--card:rgba(24,24,30,.82);--card2:#1d1d24;--line:rgba(255,255,255,.08);--or:#ff7a1a;--or2:#ffb27a;--txt:#f5f5f7;--mut:#9a9aa6}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:-apple-system,system-ui,"Segoe UI",Roboto,sans-serif;color:var(--txt);min-height:100vh;background:radial-gradient(1200px 600px at 10% -10%,rgba(255,122,26,.18),transparent 60%),radial-gradient(900px 500px at 110% 10%,rgba(255,122,26,.10),transparent 55%),var(--bg);background-attachment:fixed}
+.wrap{max-width:520px;margin:0 auto;padding:28px 18px 40px}
+h1{margin:0;font-size:1.55rem;font-weight:800;letter-spacing:.06em;background:linear-gradient(90deg,var(--or),var(--or2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mut);margin:8px 0 22px;font-size:.92rem;line-height:1.4}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;margin-bottom:18px;box-shadow:0 20px 50px rgba(0,0,0,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+h2{margin:0 0 6px;font-size:1.05rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--txt)}
+label{display:block;font-size:.78rem;font-weight:600;color:var(--mut);margin:16px 0 6px;letter-spacing:.02em}
+select{width:100%;appearance:none;-webkit-appearance:none;padding:14px 44px 14px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%23ff7a1a' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 16px center;color:var(--txt);font-size:1rem;transition:border-color .2s,box-shadow .2s}
+select:focus{outline:none;border-color:rgba(255,122,26,.7);box-shadow:0 0 0 4px rgba(255,122,26,.15)}
+select:disabled{opacity:.45;cursor:not-allowed}
+.btn{display:block;width:100%;margin-top:22px;padding:16px;border:0;border-radius:16px;background:linear-gradient(135deg,var(--or),#ff9a4d);color:#111;font-weight:800;font-size:1rem;letter-spacing:.02em;text-align:center;text-decoration:none;cursor:pointer;box-shadow:0 12px 28px rgba(255,122,26,.35);transition:transform .15s,box-shadow .2s}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.4;box-shadow:none;cursor:not-allowed}
+.price{font-size:2.6rem;font-weight:800;margin:14px 0 6px;letter-spacing:-.02em;background:linear-gradient(90deg,#fff,var(--or2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.warn{background:rgba(255,122,26,.08);border:1px solid rgba(255,122,26,.25);color:#ffd2b0;padding:12px 14px;border-radius:14px;font-size:.9rem;margin-top:12px;line-height:1.45}
+.err{color:#ff9a9a;font-size:.9rem;margin-top:12px}
+.muted{color:var(--mut);font-size:.9rem;margin:0 0 6px}
+footer{color:var(--mut);font-size:.8rem;text-align:center;margin-top:26px;line-height:1.6}
+@media(min-width:720px){.wrap{padding-top:48px}h1{font-size:1.9rem}}
+.cab{position:relative;display:flex;align-items:center;justify-content:center;min-height:60px;margin-bottom:6px}
+.logo{position:absolute;left:0;top:50%;transform:translateY(-50%);width:60px;height:60px;margin:0;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.06)}
+.sub{text-align:center}
+h2{text-align:center}
+  .logo-dir{left:auto;right:0}
 </style>
 </head>
 <body>
+<div class="cab"><img src="apple-touch-icon.png" alt="Logo Oficial TI" class="logo"><h1>OFICIAL TI</h1><img src="apple-touch-icon.png" alt="Logo Oficial TI" class="logo logo-dir"></div>
 
-<header>
-  <div class="container">
-    <div class="topo">
-      <a href="#inicio" class="logo"><img src="imagens/logo-circulo.png" alt="Oficial TI"></a>
-      <div class="busca">
-        <input id="campoBusca" type="text" placeholder="Buscar produtos">
-        <button onclick="buscar()">Buscar</button>
-      </div>
-      <a href="#produtos" class="carrinho-btn" title="Ver produtos">🛒<span class="badge" id="contadorCarrinho">0</span></a>
-    </div>
-    <nav class="abas">
-      <a href="#inicio" class="ativa">Início</a>
-      <a href="#produtos">Produtos</a>
-      <a href="#servicos">Serviços</a>
-      <a href="#login" id="linkLogin">Login</a>
-      <a href="#admin">Adm</a>
-    </nav>
-  </div>
-</header>
+<p class="sub">Assistência Técnica e Soluções Tecnológicas</p>
 
-<main class="container">
+<div class="card">
+<h2>CONSULTA DE PREÇO</h2>
+<label for="tipo">Tipo de equipamento *</label>
+<select id="tipo"></select>
+<label for="marca">Marca *</label>
+<select id="marca" disabled></select>
+<label for="modelo">Modelo *</label>
+<select id="modelo" disabled></select>
+<label for="servico">Serviço ou peça *</label>
+<select id="servico" disabled></select>
+<label for="qualidade">Qualidade da peça</label>
+<select id="qualidade" disabled></select>
+<button class="btn" id="btn" disabled>Consultar preço</button>
+<p class="err" id="msg"></p>
+</div>
 
-  <!-- INÍCIO -->
-  <section id="inicio" style="margin-top:0">
-    
+<div id="res"></div>
 
-    <div class="banner banner-foto">
-      <div>
-        <h1>Conserto profissional com laboratório moderno</h1>
-        <p>15 anos de experiência em iPhone, Motorola, Samsung, Xiaomi e notebooks.</p>
-      </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <a href="#servicos" class="btn">Pedir orçamento</a>
-        <a href="#produtos" class="btn btn-branco">Ver produtos</a>
-      </div>
-    </div>
-
-    <div class="titulo-secao" style="margin-top:28px">
-      <h2>Faça um passeio pela Oficial TI</h2>
-      <span class="selo">Loja física no Rio de Janeiro</span>
-    </div>
-    <div class="passeio">
-      <figure>
-        <img src="imagens/loja-fachada.jpeg" alt="Fachada da Oficial TI">
-        <figcaption><strong>1. Entrada</strong>Fachada da loja, com conserto de celular, notebook e acessórios.</figcaption>
-      </figure>
-      <figure>
-        <img src="imagens/equipe-atendimento.jpeg" alt="Atendimento na loja Oficial TI">
-        <figcaption><strong>2. Atendimento</strong>Nossa equipe explica o diagnóstico olhando junto com você.</figcaption>
-      </figure>
-      <figure>
-        <img src="imagens/bancada-tecnico.jpeg" alt="Técnico trabalhando no microscópio">
-        <figcaption><strong>3. Laboratório</strong>Microscópio, fontes de alimentação e equipamentos de diagnóstico.</figcaption>
-      </figure>
-      <figure>
-        <img src="imagens/bancada-pecas.jpeg" alt="Bancada de reparo em placa">
-        <figcaption><strong>4. Bancada de reparo</strong>Reparo em placa, troca de componentes e micro-soldagem.</figcaption>
-      </figure>
-    </div>
-
-    <div class="titulo-secao" style="margin-top:34px">
-      <h2>Por que a Oficial TI</h2>
-    </div>
-    <div class="diferenciais">
-      <div class="dif"><strong>15 anos</strong><span>de experiência em conserto de celulares e notebooks</span></div>
-      <div class="dif"><strong>Laboratório moderno</strong><span>equipamentos atualizados e mão de obra qualificada</span></div>
-      <div class="dif"><strong>Honestidade</strong><span>atendimento profissional, com qualidade e transparência</span></div>
-      <div class="dif"><strong>Seus dados</strong><span>cuidado total com as informações do seu aparelho</span></div>
-    </div>
-  </section>
-
-  <!-- PRODUTOS (vitrine pública) -->
-  <section id="produtos">
-    <div class="titulo-secao">
-      <h2>Produtos</h2>
-      <span class="selo" id="seloCategoria">Todos os produtos</span>
-    </div>
-    <div class="grade" id="gradeProdutos"></div>
-    <p class="vazio" id="semProdutos" style="display:none">Nenhum produto disponível no momento.</p>
-  </section>
-
-  <!-- SERVIÇOS (inclui solicitação de orçamento) -->
-  <section id="servicos">
-    <div class="titulo-secao">
-      <h2>Serviços</h2>
-      <span class="selo">Orçamento sem compromisso</span>
-    </div>
-    <div class="grade">
-      <div class="servico" onclick="preencherServico('Conserto de iPhone')"><div class="emoji">📱</div><h3>Conserto de iPhone</h3><p>Não liga, tela quebrada, reinicia sozinho, tela branca, amarela ou rosa</p></div>
-      <div class="servico" onclick="preencherServico('Conserto de Samsung / Motorola / Xiaomi')"><div class="emoji">📲</div><h3>Android</h3><p>Samsung, Motorola e Xiaomi: tela, bateria, conector e placa</p></div>
-      <div class="servico" onclick="preencherServico('Conserto de notebook')"><div class="emoji">💻</div><h3>Notebook</h3><p>Troca de tela, teclado, dobradiça, superaquecimento e placa-mãe</p></div>
-      <div class="servico" onclick="preencherServico('Aparelho caiu na água')"><div class="emoji">💧</div><h3>Celular na água</h3><p>Atendimento rápido para evitar curto e oxidação avançada</p></div>
-      <div class="servico" onclick="preencherServico('Recuperação de senha')"><div class="emoji">🔐</div><h3>Recuperação de senha</h3><p>Recuperação de acesso ao aparelho com cuidado com seus dados</p></div>
-      <div class="servico" onclick="preencherServico('Diagnóstico em placa (micro-soldagem)')"><div class="emoji">🔬</div><h3>Reparo em placa</h3><p>Diagnóstico em nível de componente, reballing e micro-soldagem</p></div>
-    </div>
-
-    <hr class="separador">
-
-    <div class="titulo-secao">
-      <h2>Solicitar orçamento</h2>
-      <span class="selo">Resposta pelo WhatsApp</span>
-    </div>
-    <div class="painel">
-      <div class="form-grid">
-        <div class="campo">
-          <label for="oNome">Seu nome *</label>
-          <input id="oNome" placeholder="Nome completo">
-        </div>
-        <div class="campo">
-          <label for="oWhats">WhatsApp *</label>
-          <input id="oWhats" placeholder="(21) 99999-9999">
-        </div>
-        <div class="campo">
-          <label for="oServico">Serviço *</label>
-          <select id="oServico">
-            <option>Conserto de iPhone</option>
-            <option>Conserto de Samsung / Motorola / Xiaomi</option>
-            <option>Conserto de notebook</option>
-            <option>Aparelho caiu na água</option>
-            <option>Recuperação de senha</option>
-            <option>Diagnóstico em placa (micro-soldagem)</option>
-            <option>Outro</option>
-          </select>
-        </div>
-        <div class="campo">
-          <label for="oAparelho">Aparelho (marca e modelo)</label>
-          <input id="oAparelho" placeholder="Ex.: iPhone 13 Pro">
-        </div>
-        <div class="campo inteiro">
-          <label for="oProblema">Descreva o problema *</label>
-          <textarea id="oProblema" placeholder="Ex.: não liga após cair, tela com manchas..."></textarea>
-        </div>
-      </div>
-      <div class="acoes">
-        <button class="btn" onclick="enviarOrcamento()">Enviar pelo WhatsApp</button>
-      </div>
-    </div>
-
-    <div class="titulo-secao" style="margin-top:34px">
-      <h2>Siga a Oficial TI</h2>
-    </div>
-    <div class="categorias redes">
-      <a href="https://www.instagram.com/oficial_ti" target="_blank" rel="noopener"><div class="icone" style="background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);border-color:transparent;color:#fff">📸</div>Instagram</a>
-      <a href="https://www.tiktok.com/@oficial_ti" target="_blank" rel="noopener"><div class="icone" style="background:#111;color:#fff;border-color:#111">🎵</div>TikTok</a>
-      <a href="https://www.youtube.com/@oficial_ti" target="_blank" rel="noopener"><div class="icone" style="background:#FF0000;color:#fff;border-color:#FF0000">▶️</div>YouTube</a>
-      <a href="https://wa.me/5521988431645" target="_blank" rel="noopener"><div class="icone" style="background:#25D366;color:#fff;border-color:#25D366">💬</div>WhatsApp</a>
-    </div>
-  </section>
-
-  <!-- LOGIN DO CLIENTE -->
-  <section id="login" class="oculto">
-    <div class="titulo-secao">
-      <h2>Área do cliente</h2>
-      <span class="selo">Acompanhe seus pedidos</span>
-    </div>
-
-    <div class="painel oculto" id="clienteLogado">
-      <p>Olá, <strong id="clienteNome"></strong>!</p>
-      <p class="aviso">Em breve você verá aqui o histórico de orçamentos e reparos.</p>
-      <div class="acoes"><button class="btn btn-preto" onclick="sairCliente()">Sair</button></div>
-    </div>
-
-    <div class="painel" id="clienteForm">
-      <div class="form-grid">
-        <div class="campo">
-          <label for="cNome">Nome (apenas para criar conta)</label>
-          <input id="cNome" placeholder="Seu nome">
-        </div>
-        <div class="campo">
-          <label for="cCelular">Número de celular (WhatsApp)</label>
-          <input id="cCelular" type="tel" placeholder="(21) 99999-9999">
-        </div>
-        <div class="campo">
-          <label for="cEmail">E-mail</label>
-          <input id="cEmail" type="email" placeholder="voce@email.com">
-        </div>
-        <div class="campo">
-          <label for="cSenha">Senha</label>
-          <input id="cSenha" type="password" placeholder="Mínimo 6 caracteres">
-        </div>
-      </div>
-      <div class="acoes">
-        <button class="btn" onclick="entrarCliente()">Entrar</button>
-        <button class="btn btn-preto" onclick="criarConta()">Criar conta</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ADMINISTRATIVO (acesso restrito) -->
-  <section id="admin" class="oculto">
-    <div class="titulo-secao">
-      <h2>Área administrativa</h2>
-      <span class="selo">Acesso restrito</span>
-    </div>
-
-    <div class="painel" id="adminBloqueado">
-      <div class="form-grid">
-        <div class="campo">
-          <label for="adminSenha">Senha do administrador</label>
-          <input id="adminSenha" type="password" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')entrarAdmin()">
-        </div>
-      </div>
-      <div class="acoes"><button class="btn" onclick="entrarAdmin()">Entrar</button></div>
-    </div>
-
-    <div class="painel oculto" id="adminPainel">
-      <div class="titulo-secao">
-        <h3 class="subtitulo" style="margin:0">Cadastrar produto</h3>
-        <button class="btn btn-preto" onclick="sairAdmin()">Sair da área administrativa</button>
-      </div>
-      <input type="hidden" id="editandoId">
-      <div class="form-grid" style="margin-top:16px">
-        <div class="campo">
-          <label for="pNome">Nome do produto *</label>
-          <input id="pNome" placeholder="Ex.: Tela OLED iPhone 11">
-        </div>
-        <div class="campo">
-          <label for="pCategoria">Categoria *</label>
-          <select id="pCategoria">
-            <option>Celulares</option><option>Notebooks</option><option>Telas</option>
-            <option>Baterias</option><option>Ferramentas</option><option>Acessórios</option><option>Peças</option>
-          </select>
-        </div>
-        <div class="campo">
-          <label for="pMarca">Marca</label>
-          <input id="pMarca" placeholder="Ex.: Apple, Samsung">
-        </div>
-        <div class="campo">
-          <label for="pCusto">Custo (R$)</label>
-          <input id="pCusto" type="number" step="0.01" min="0" placeholder="0,00">
-        </div>
-        <div class="campo">
-          <label for="pPreco">Preço de venda (R$) *</label>
-          <input id="pPreco" type="number" step="0.01" min="0" placeholder="0,00">
-        </div>
-        <div class="campo">
-          <label>Sugestão de preço</label>
-          <div class="sugestao" id="sugestao">Informe o custo para ver o preço sugerido.</div>
-        </div>
-        <div class="campo">
-          <label for="pEstoque">Estoque</label>
-          <input id="pEstoque" type="number" min="0" placeholder="Ex.: 10">
-        </div>
-        <div class="campo">
-          <label for="pImagem">Link da imagem (opcional)</label>
-          <input id="pImagem" placeholder="https://...">
-        </div>
-        <div class="campo inteiro">
-          <label for="pEspecs">Especificações (uma por linha)</label>
-          <textarea id="pEspecs" placeholder="Compatibilidade: iPhone 11&#10;Tipo: OLED&#10;Garantia: 90 dias"></textarea>
-        </div>
-      </div>
-      <div class="acoes">
-        <button class="btn" onclick="salvarProduto()">Salvar produto</button>
-        <button class="btn btn-preto" onclick="limparFormulario()">Limpar</button>
-      </div>
-      <div class="lista-admin" id="listaAdmin"></div>
-    </div>
-  </section>
-
-</main>
-
-<footer id="contato">
-  <div class="container rodape-grid">
-    <div>
-      <img src="imagens/logo.png" alt="Oficial TI" style="height:56px;margin-bottom:10px;display:block">
-      <p>Conserto de celulares, notebooks e venda de eletrônicos e acessórios de tecnologia.</p>
-      <p>Atendimento profissional, com qualidade e honestidade.</p>
-    </div>
-    <div>
-      <h4>Atendimento</h4>
-      <p>Rua Adolfo Bergamini, 22 - Engenho de Dentro</p>
-      <p>Rio de Janeiro - RJ</p>
-      <p>Referência: Estação do Engenhão</p>
-      <p>WhatsApp: (21) 98843-1645</p>
-    </div>
-  </div>
-</footer>
-
-<a class="whats-flutuante" href="https://wa.me/5521988431645" target="_blank" title="Fale conosco no WhatsApp">💬</a>
-
-<nav class="barra-inferior">
-  <a href="#produtos"><span>🛍️</span>Produtos</a>
-  <a href="#servicos"><span>🛠️</span>Serviços</a>
-  <a href="#login"><span>👤</span>Login</a>
-  <a href="#admin"><span>⚙️</span>Adm</a>
-</nav>
-
-<div class="toast" id="toast"></div>
+<footer>Rua Adolfo Bergamini, 22, Engenho de Dentro, Rio de Janeiro — RJ<br>WhatsApp: +55 21 98843-1645</footer>
+</div>
 
 <script>
-  const WHATS = "5521988431645";
-  const CHAVE_PRODUTOS = "oficialti_produtos";
-  const CHAVE_CLIENTES = "oficialti_clientes";
-  const SESSAO_ADMIN = "oficialti_admin";
-  const SESSAO_CLIENTE = "oficialti_cliente";
+// Endereço do Apps Script (aplicativo da web)
+const API='https://script.google.com/macros/s/AKfycbwG49SD68nM7JBbVTqB-Gwx1cgdi1gL8nXHy57BLzmSEPDzS-HVTzIPH53UmVbcPovRkw/exec';
+const WHATS='5521988431645';
+const TIPO={celular:'Celular',tablet:'Tablet',ipad:'iPad',watch:'Apple Watch'};
+const BRL=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+const SEM='Preço sob avaliação técnica. Entre em contato com a Oficial TI.';
+let itens=[];
+const $=id=>document.getElementById(id);
+const uniq=a=>[...new Set(a)].sort();
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-  // Hash SHA-256 da senha do administrador. Para trocar, rode no terminal:
-  // printf 'sua-nova-senha' | sha256sum   e cole o resultado aqui.
-  const ADMIN_HASH = "3aa5403c55d9e7882e73278d1dff392b3f5e9021d97c69db22c04e7e46666cbc";
+// Preenche um select mantendo a escolha atual, se ela ainda existir na lista
+function opts(sel,arr,ph){
+  const cur=sel.value;
+  sel.innerHTML='';
+  sel.append(new Option(ph,''));
+  arr.forEach(v=>sel.append(new Option(TIPO[v]||v,v)));
+  sel.value=arr.includes(cur)?cur:'';
+  sel.disabled=!arr.length;
+}
 
-  let produtos = [];
-  let categoriaAtiva = null;
-  let carrinho = 0;
+// Recalcula os menus seguintes conforme as escolhas anteriores
+function cascata(){
+  const t=$('tipo').value;
+  const b1=itens.filter(i=>i.tipo===t);
+  opts($('marca'),uniq(b1.map(i=>i.marca)),'Selecione a marca');
+  const b2=b1.filter(i=>i.marca===$('marca').value);
+  opts($('modelo'),uniq(b2.map(i=>i.modelo)),'Selecione o modelo');
+  const b3=b2.filter(i=>i.modelo===$('modelo').value);
+  opts($('servico'),uniq(b3.map(i=>i.servico)),'Selecione o serviço');
+  const b4=b3.filter(i=>i.servico===$('servico').value);
+  opts($('qualidade'),uniq(b4.map(i=>i.qualidade)),'Selecione a qualidade');
+  $('btn').disabled=!($('tipo').value&&$('marca').value&&$('modelo').value&&$('servico').value);
+}
 
-  // ===== FOTOS NO GOOGLE DRIVE =====
-  // Cole o ID de cada arquivo (trecho entre /d/ e /view no link do Drive).
-  // Enquanto estiver como COLE_ID, a página usa a pasta local imagens/.
-  const FOTOS_DRIVE = {
-    "loja-fachada.jpeg":       "1AytDr_e9vGUH-r_9M7nxTOxWf0SR_GYt",
-    "equipe-atendimento.jpeg": "1tQz2zaSbZmIbwXSLCUighwiAERT8UCXe",
-    "bancada-tecnico.jpeg":    "1cI1aS-BL-KS5_67-e558mvNGxqbWVILH",
-    "bancada-pecas.jpeg":      "1j4KFw1nidpacs1MJPtjrjPVCQGWquCS9",
-    "logo.png":                "1-fZ2x_A5vmkXqM-q0DzLI3zb5vXbZmcx",
-    "logo-circulo.png":        "15_wvU6oBK_cY0UzcOIkIY7oK-P79YZ5g"
-  };
-  const urlDrive = id => `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
-  const temId = nome => FOTOS_DRIVE[nome] && !FOTOS_DRIVE[nome].startsWith("COLE_ID");
+// Mensagem enviada pelo WhatsApp
+function wa(p,preco){
+  const l=['Olá, Oficial TI! Gostaria de solicitar um orçamento.','',
+    `Equipamento: ${TIPO[p.tipo]||p.tipo}`,`Marca: ${p.marca}`,`Modelo: ${p.modelo}`,`Serviço: ${p.servico}`];
+  if(p.qualidade) l.push(`Qualidade: ${p.qualidade}`);
+  l.push(preco!=null?`Preço informado: ${BRL.format(preco)}`:'Preço não cadastrado: solicito avaliação técnica e orçamento.');
+  l.push('','Gostaria de confirmar a disponibilidade e as condições do serviço.');
+  return `https://wa.me/${WHATS}?text=${encodeURIComponent(l.join('\n'))}`;
+}
 
-  document.querySelectorAll('img[src^="imagens/"]').forEach(img => {
-    const nome = img.getAttribute("src").replace("imagens/", "");
-    if (temId(nome)) img.src = urlDrive(FOTOS_DRIVE[nome]);
-  });
-  if (temId("loja-fachada.jpeg")) {
-    document.documentElement.style.setProperty("--fachada", `url("${urlDrive(FOTOS_DRIVE["loja-fachada.jpeg"])}")`);
+// Consulta o preço final no Apps Script
+async function consultar(){
+  $('msg').textContent=''; $('res').innerHTML='';
+  const p={tipo:$('tipo').value,marca:$('marca').value,modelo:$('modelo').value,servico:$('servico').value,qualidade:$('qualidade').value};
+  if(!$('qualidade').disabled && !p.qualidade){ $('msg').textContent='Selecione a qualidade da peça.'; return; }
+  $('btn').disabled=true;
+  try{
+    const r=await fetch(API+'?'+new URLSearchParams({acao:'consulta',...p}));
+    const d=await r.json();
+    if(d.erro) throw new Error(d.erro);
+    mostrar(p,d);
+  }catch(e){
+    $('msg').textContent='Não foi possível consultar agora. Tente novamente em instantes.';
+  }finally{
+    $('btn').disabled=false;
   }
+}
 
-  // ===== UTILIDADES =====
-  async function sha256(texto) {
-    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(texto));
-    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+function mostrar(p,d){
+  const sob=!(d.preco>0);
+  const preco=sob?null:d.preco;
+  $('res').innerHTML=`<div class="card">
+    <h2>Resultado da consulta</h2>
+    <p class="muted">${esc(TIPO[p.tipo]||p.tipo)} · ${esc(p.marca)} ${esc(p.modelo)}</p>
+    <p><b>Serviço:</b> ${esc(p.servico)}${p.qualidade?`<br><b>Qualidade:</b> ${esc(p.qualidade)}`:''}</p>
+    ${sob?`<div class="warn">${SEM}</div>`
+      :`<div class="price">${esc(BRL.format(preco))}</div><div class="warn">O valor pode depender de avaliação técnica do aparelho.</div>`}
+    <a class="btn" href="${wa(p,preco)}" target="_blank" rel="noopener">Solicitar pelo WhatsApp</a>
+  </div>`;
+}
+
+// Carrega as opções dos menus ao abrir a página
+async function iniciar(){
+  try{
+    const r=await fetch(API+'?acao=opcoes');
+    const d=await r.json();
+    itens=d.itens||[];
+    opts($('tipo'),uniq(itens.map(i=>i.tipo)),'Selecione o equipamento');
+    cascata();
+  }catch(e){
+    $('msg').textContent='Não foi possível carregar os aparelhos. Atualize a página.';
   }
-  function esc(t) {
-    return String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  }
-  const brl = v => Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-  function mostrarToast(msg) {
-    const t = document.getElementById("toast");
-    t.textContent = msg;
-    t.classList.add("visivel");
-    clearTimeout(window._toast);
-    window._toast = setTimeout(() => t.classList.remove("visivel"), 2400);
-  }
+}
 
-  // ===== PRODUTOS =====
-  function carregarProdutos() {
-    try { produtos = JSON.parse(localStorage.getItem(CHAVE_PRODUTOS) || "[]"); }
-    catch (e) { produtos = []; }
-  }
-  function gravarProdutos() {
-    try { localStorage.setItem(CHAVE_PRODUTOS, JSON.stringify(produtos)); } catch (e) {}
-  }
-
-  // Regra de preço sugerido: custo x multiplicador
-  function multiplicador(custo) {
-    if (custo <= 80) return 3;
-    if (custo <= 150) return 2.5;
-    if (custo <= 1000) return 2;
-    return 2.5;
-  }
-  function atualizarSugestao() {
-    const custo = parseFloat(document.getElementById("pCusto").value);
-    const box = document.getElementById("sugestao");
-    if (!custo || custo <= 0) { box.textContent = "Informe o custo para ver o preço sugerido."; return; }
-    const sugerido = Math.round(custo * multiplicador(custo) * 100) / 100;
-    box.innerHTML = `Preço sugerido: <strong>${brl(sugerido)}</strong> (custo x ${String(multiplicador(custo)).replace(".", ",")})`;
-  }
-
-  function renderVitrine() {
-    const grade = document.getElementById("gradeProdutos");
-    const lista = categoriaAtiva ? produtos.filter(p => p.categoria === categoriaAtiva) : produtos;
-    document.getElementById("seloCategoria").textContent = categoriaAtiva || "Todos os produtos";
-    document.getElementById("semProdutos").style.display = produtos.length ? "none" : "block";
-    if (!lista.length) { grade.innerHTML = produtos.length ? `<p class="vazio">Nenhum produto nesta categoria.</p>` : ""; return; }
-
-    grade.innerHTML = lista.map(p => {
-      const emoji = {Celulares:"📱",Notebooks:"💻",Telas:"🖥️",Baterias:"🔋",Ferramentas:"🧰",Acessórios:"🎧",Peças:"🔩"}[p.categoria] || "📦";
-      const img = p.imagem
-        ? `<img src="${esc(p.imagem)}" alt="${esc(p.nome)}" onerror="this.parentNode.innerHTML='${emoji}'">`
-        : emoji;
-      const specs = (p.especs || []).slice(0, 2).map(esc).join(" • ");
-      return `
-        <div class="card">
-          <div class="imagem">${img}</div>
-          <div class="corpo">
-            ${p.marca ? `<span class="meta">${esc(p.marca)}</span>` : ""}
-            <h3>${esc(p.nome)}</h3>
-            <div class="preco">${brl(p.preco)}</div>
-            ${specs ? `<div class="meta">${specs}</div>` : ""}
-            <div class="meta">${p.estoque > 0 ? `${p.estoque} em estoque` : "Consulte disponibilidade"}</div>
-            <button class="btn" onclick="adicionarCarrinho('${esc(p.id)}')">Adicionar ao carrinho</button>
-          </div>
-        </div>`;
-    }).join("");
-  }
-
-  function filtrarCategoria(cat) { categoriaAtiva = cat; renderVitrine(); }
-
-  function buscar() {
-    const termo = document.getElementById("campoBusca").value.trim().toLowerCase();
-    if (!termo) { categoriaAtiva = null; renderVitrine(); return; }
-    const achados = produtos.filter(p =>
-      (p.nome + " " + p.marca + " " + p.categoria + " " + (p.especs || []).join(" ")).toLowerCase().includes(termo));
-    document.getElementById("seloCategoria").textContent = `Busca: "${termo}"`;
-    document.getElementById("gradeProdutos").innerHTML = achados.length
-      ? achados.map(p => `<div class="card"><div class="corpo"><h3>${esc(p.nome)}</h3><div class="preco">${brl(p.preco)}</div><button class="btn" onclick="adicionarCarrinho('${esc(p.id)}')">Adicionar</button></div></div>`).join("")
-      : `<p class="vazio">Nenhum produto encontrado. Tente outro termo ou peça um orçamento em Serviços.</p>`;
-    document.getElementById("produtos").scrollIntoView({ behavior: "smooth" });
-  }
-
-  function adicionarCarrinho(id) {
-    carrinho++;
-    document.getElementById("contadorCarrinho").textContent = carrinho;
-    const p = produtos.find(x => x.id === id);
-    mostrarToast(`${p ? p.nome : "Produto"} adicionado ao carrinho`);
-  }
-
-  // ===== ADMINISTRATIVO =====
-  function adminLogado() { return sessionStorage.getItem(SESSAO_ADMIN) === "1"; }
-
-  async function entrarAdmin() {
-    const senha = document.getElementById("adminSenha").value;
-    if (!senha) { mostrarToast("Digite a senha"); return; }
-    try {
-      const h = await sha256(senha);
-      if (h === ADMIN_HASH) {
-        sessionStorage.setItem(SESSAO_ADMIN, "1");
-        document.getElementById("adminSenha").value = "";
-        atualizarAdmin();
-        mostrarToast("Acesso liberado");
-      } else {
-        mostrarToast("Senha incorreta");
-      }
-    } catch (e) {
-      mostrarToast("Esta verificação exige HTTPS (use o endereço do GitHub Pages)");
-    }
-  }
-
-  function sairAdmin() {
-    sessionStorage.removeItem(SESSAO_ADMIN);
-    atualizarAdmin();
-    mostrarToast("Você saiu da área administrativa");
-  }
-
-  function atualizarAdmin() {
-    const ok = adminLogado();
-    document.getElementById("adminBloqueado").classList.toggle("oculto", ok);
-    document.getElementById("adminPainel").classList.toggle("oculto", !ok);
-    if (ok) renderAdmin();
-  }
-
-  function salvarProduto() {
-    if (!adminLogado()) return;
-    const nome = document.getElementById("pNome").value.trim();
-    const preco = parseFloat(document.getElementById("pPreco").value);
-    if (!nome || !(preco >= 0)) { mostrarToast("Preencha nome e preço de venda"); return; }
-
-    const especs = document.getElementById("pEspecs").value.split("\n").map(s => s.trim()).filter(Boolean);
-    const editando = document.getElementById("editandoId").value;
-    const dados = {
-      id: editando || String(Date.now()),
-      nome,
-      categoria: document.getElementById("pCategoria").value,
-      marca: document.getElementById("pMarca").value.trim(),
-      custo: parseFloat(document.getElementById("pCusto").value) || 0,
-      preco,
-      estoque: parseInt(document.getElementById("pEstoque").value, 10) || 0,
-      imagem: document.getElementById("pImagem").value.trim(),
-      especs
-    };
-    if (editando) produtos = produtos.map(p => p.id === editando ? dados : p);
-    else produtos.unshift(dados);
-
-    gravarProdutos();
-    limparFormulario();
-    renderVitrine();
-    renderAdmin();
-    mostrarToast(editando ? "Produto atualizado" : "Produto cadastrado");
-  }
-
-  function editarProduto(id) {
-    if (!adminLogado()) return;
-    const p = produtos.find(x => x.id === id);
-    if (!p) return;
-    document.getElementById("editandoId").value = p.id;
-    document.getElementById("pNome").value = p.nome;
-    document.getElementById("pCategoria").value = p.categoria;
-    document.getElementById("pMarca").value = p.marca || "";
-    document.getElementById("pCusto").value = p.custo || "";
-    document.getElementById("pPreco").value = p.preco;
-    document.getElementById("pEstoque").value = p.estoque || "";
-    document.getElementById("pImagem").value = p.imagem || "";
-    document.getElementById("pEspecs").value = (p.especs || []).join("\n");
-    atualizarSugestao();
-    document.getElementById("adminPainel").scrollIntoView({ behavior: "smooth" });
-  }
-
-  function removerProduto(id) {
-    if (!adminLogado()) return;
-    if (!confirm("Remover este produto?")) return;
-    produtos = produtos.filter(p => p.id !== id);
-    gravarProdutos();
-    renderVitrine();
-    renderAdmin();
-  }
-
-  function limparFormulario() {
-    ["editandoId","pNome","pMarca","pCusto","pPreco","pEstoque","pImagem","pEspecs"].forEach(id => document.getElementById(id).value = "");
-    document.getElementById("pCategoria").selectedIndex = 0;
-    atualizarSugestao();
-  }
-
-  function renderAdmin() {
-    const box = document.getElementById("listaAdmin");
-    if (!produtos.length) { box.innerHTML = `<p class="vazio">Nenhum produto cadastrado.</p>`; return; }
-    box.innerHTML = produtos.map(p => `
-      <div class="item-admin">
-        <div>
-          <strong>${esc(p.nome)}</strong><br>
-          <small>${esc(p.categoria)} • ${brl(p.preco)}${p.custo ? ` • custo ${brl(p.custo)}` : ""} • estoque ${p.estoque}</small>
-        </div>
-        <div style="display:flex;gap:12px">
-          <button class="lixo" style="color:var(--laranja)" onclick="editarProduto('${esc(p.id)}')">Editar</button>
-          <button class="lixo" onclick="removerProduto('${esc(p.id)}')">Excluir</button>
-        </div>
-      </div>`).join("");
-  }
-
-  // ===== LOGIN DO CLIENTE (armazenamento local de demonstração) =====
-  function listaClientes() {
-    try { return JSON.parse(localStorage.getItem(CHAVE_CLIENTES) || "[]"); }
-    catch (e) { return []; }
-  }
-  function salvarClientes(lista) {
-    try { localStorage.setItem(CHAVE_CLIENTES, JSON.stringify(lista)); } catch (e) {}
-  }
-
-  async function criarConta() {
-    const nome = document.getElementById("cNome").value.trim();
-    const email = document.getElementById("cEmail").value.trim().toLowerCase();
-    const celular = document.getElementById("cCelular").value.trim();
-    const senha = document.getElementById("cSenha").value;
-    if (!nome || !celular || !email || senha.length < 6) { mostrarToast("Preencha nome, celular, e-mail e senha (mín. 6)"); return; }
-    if (celular.replace(/\D/g, "").length < 10) { mostrarToast("Informe um celular válido com DDD"); return; }
-    const lista = listaClientes();
-    if (lista.some(c => c.email === email)) { mostrarToast("Este e-mail já tem conta. Entre com sua senha."); return; }
-    try {
-      lista.push({ nome, email, celular, hash: await sha256(senha) });
-      salvarClientes(lista);
-      sessionStorage.setItem(SESSAO_CLIENTE, email);
-      limparCamposCliente();
-      renderCliente();
-      mostrarToast("Conta criada com sucesso");
-    } catch (e) {
-      mostrarToast("Esta verificação exige HTTPS");
-    }
-  }
-
-  async function entrarCliente() {
-    const email = document.getElementById("cEmail").value.trim().toLowerCase();
-    const senha = document.getElementById("cSenha").value;
-    const c = listaClientes().find(x => x.email === email);
-    try {
-      if (c && (await sha256(senha)) === c.hash) {
-        sessionStorage.setItem(SESSAO_CLIENTE, email);
-        limparCamposCliente();
-        renderCliente();
-        mostrarToast(`Bem-vindo, ${c.nome}`);
-      } else {
-        mostrarToast("E-mail ou senha incorretos");
-      }
-    } catch (e) {
-      mostrarToast("Esta verificação exige HTTPS");
-    }
-  }
-
-  function sairCliente() {
-    sessionStorage.removeItem(SESSAO_CLIENTE);
-    renderCliente();
-    mostrarToast("Você saiu da sua conta");
-  }
-
-  function limparCamposCliente() {
-    ["cNome","cCelular","cEmail","cSenha"].forEach(id => document.getElementById(id).value = "");
-  }
-
-  function renderCliente() {
-    const email = sessionStorage.getItem(SESSAO_CLIENTE);
-    const cliente = email ? listaClientes().find(c => c.email === email) : null;
-    document.getElementById("clienteForm").classList.toggle("oculto", !!cliente);
-    document.getElementById("clienteLogado").classList.toggle("oculto", !cliente);
-    document.getElementById("linkLogin").textContent = cliente ? "Minha conta" : "Login";
-    if (cliente) {
-      document.getElementById("clienteNome").textContent = cliente.nome;
-      if (!document.getElementById("oNome").value) document.getElementById("oNome").value = cliente.nome;
-      if (!document.getElementById("oWhats").value && cliente.celular) document.getElementById("oWhats").value = cliente.celular;
-    }
-  }
-
-  // ===== SERVIÇOS / ORÇAMENTO =====
-  function preencherServico(nome) {
-    document.getElementById("oServico").value = nome;
-    document.getElementById("oProblema").focus();
-    document.getElementById("servicos").scrollIntoView({ behavior: "smooth" });
-  }
-
-  function enviarOrcamento() {
-    const nome = document.getElementById("oNome").value.trim();
-    const zap = document.getElementById("oWhats").value.trim();
-    const servico = document.getElementById("oServico").value;
-    const aparelho = document.getElementById("oAparelho").value.trim();
-    const problema = document.getElementById("oProblema").value.trim();
-    if (!nome || !zap || !problema) { mostrarToast("Preencha nome, WhatsApp e problema"); return; }
-    const texto = `Olá! Gostaria de um orçamento.\n\n*Nome:* ${nome}\n*WhatsApp:* ${zap}\n*Serviço:* ${servico}\n*Aparelho:* ${aparelho || "não informado"}\n*Problema:* ${problema}`;
-    window.open(`https://wa.me/${WHATS}?text=${encodeURIComponent(texto)}`, "_blank");
-  }
-
-  // ===== MENU E INICIALIZAÇÃO =====
-  const abas = document.querySelectorAll("nav.abas a");
-  window.addEventListener("scroll", () => {
-    let atual = "inicio";
-    ["inicio","produtos","servicos","login","admin"].forEach(id => {
-      const el = document.getElementById(id);
-      if (el && !el.classList.contains("oculto") && el.getBoundingClientRect().top < 140) atual = id;
-    });
-    abas.forEach(a => a.classList.toggle("ativa", a.getAttribute("href") === "#" + atual));
-  });
-
-  document.getElementById("pCusto").addEventListener("input", atualizarSugestao);
-  document.getElementById("campoBusca").addEventListener("keydown", e => { if (e.key === "Enter") buscar(); });
-
-  carregarProdutos();
-  renderVitrine();
-  renderCliente();
-  atualizarAdmin();
-
-  // Mostra "Login" e "Adm" somente quando o menu correspondente for acionado
-  // Não depende de mudar o endereço (hash), que nem sempre funciona na prévia.
-  function abrirVisao(alvo) {
-    // Início mostra a página completa; Produtos e Serviços mostram só a sua tela.
-    const telas = {
-      inicio:   ["inicio", "produtos", "servicos"],
-      produtos: ["produtos"],
-      servicos: ["servicos"],
-      login:    ["login"],
-      admin:    ["admin"]
-    };
-    const mostrar = telas[alvo] || telas.inicio;
-    ["inicio", "produtos", "servicos", "login", "admin"].forEach(id =>
-      document.getElementById(id).classList.toggle("oculto", !mostrar.includes(id)));
-    document.querySelector("footer").classList.toggle("oculto", alvo !== "inicio");
-    setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 0);
-    abas.forEach(a => a.classList.toggle("ativa", a.getAttribute("href") === "#" + (telas[alvo] ? alvo : "inicio")));
-  }
-
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener("click", e => {
-      e.preventDefault();
-      abrirVisao(a.getAttribute("href").slice(1));
-    });
-  });
-
-  // Estado inicial: somente Início
-  abrirVisao("inicio");
+['tipo','marca','modelo','servico'].forEach(id=>$(id).addEventListener('change',cascata));
+$('btn').addEventListener('click',consultar);
+iniciar();
 </script>
 </body>
 </html>
